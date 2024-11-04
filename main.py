@@ -2,6 +2,8 @@ import tensorflow as tf
 from tensorflow.keras import layers, models
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from sklearn.utils import class_weight
+import numpy as np
 
 datagen = ImageDataGenerator(
     rotation_range=20,
@@ -15,25 +17,24 @@ datagen = ImageDataGenerator(
 )
 
 train_dataset = tf.keras.preprocessing.image_dataset_from_directory(
-    'C:\AmbienteDesenvolvimento\ProjetoIA2.1\pythonProject\pollution-sea-dataset\pollution-sea-dataset\datasetGarbage/train',
+    r'C:\Users\Dudu\Desktop\Reconhecimento\Processamento-de-lixo-no-mar\pollution-sea-dataset\pollution-sea-dataset\datasetGarbage/train',
     image_size=(224, 224),
     batch_size=16,
     label_mode='categorical',
-    validation_split=0.2,  # 20% para validação e 80% treinamento
-    subset="training",      # Para o conjunto de treinamento
-    seed=123               # Para reprodutibilidade
+    validation_split=0.2,
+    subset="training",
+    seed=123
 )
 
 validation_dataset = tf.keras.preprocessing.image_dataset_from_directory(
-    'C:\AmbienteDesenvolvimento\ProjetoIA2.1\pythonProject\pollution-sea-dataset\pollution-sea-dataset\datasetGarbage/validation',
+    r'C:\Users\Dudu\Desktop\Reconhecimento\Processamento-de-lixo-no-mar\pollution-sea-dataset\pollution-sea-dataset\datasetGarbage/validation',
     image_size=(224, 224),
     batch_size=16,
     label_mode='categorical',
-
 )
 
 test_dataset = tf.keras.preprocessing.image_dataset_from_directory(
-    'C:\AmbienteDesenvolvimento\ProjetoIA2.1\pythonProject\pollution-sea-dataset\pollution-sea-dataset\datasetGarbage/test',
+    r'C:\Users\Dudu\Desktop\Reconhecimento\Processamento-de-lixo-no-mar\pollution-sea-dataset\pollution-sea-dataset\datasetGarbage/test',
     image_size=(224, 224),
     batch_size=16,
     label_mode='categorical',
@@ -53,6 +54,10 @@ model = models.Sequential([
 ])
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Calcular os pesos das classes
+train_labels = np.concatenate([y for x, y in train_dataset], axis=0)  # Obter labels do conjunto de treinamento
+class_weights = class_weight.compute_class_weight('balanced', classes=np.unique(train_labels.argmax(axis=1)), y=train_labels.argmax(axis=1))
 
 # Configurar callbacks
 early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)

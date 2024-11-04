@@ -29,7 +29,7 @@ def classificar_imagem(img_path):
     return class_labels[classe_predita]
 
 # Usar a função
-caminho_imagem = 'C:\AmbienteDesenvolvimento\ProjetoIA2.1\imagem test\image_000.jpg'
+caminho_imagem = r'C:\Users\Dudu\Desktop\Reconhecimento\Processamento-de-lixo-no-mar\pollution-sea-dataset\pollution-sea-dataset\datasetGarbage\train\Garbage/image_125.jpg'
 
 resultado = classificar_imagem(caminho_imagem)
 print(f'A imagem classificada é: {resultado}')
