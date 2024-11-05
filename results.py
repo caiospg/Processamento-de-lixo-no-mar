@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 model = tf.keras.models.load_model('main.h5')
 
 # Dicionário para mapear classes a labels
-class_labels = {0: 'Resíduo Sólido', 1: 'Rio/MAR Limpo'}
+class_labels = {0: 'Resíduo Sólido', 1: 'Rio/MAR Limpo', 2: 'Manchas de oleo'}
 
 def classificar_imagem(img_path):
     # Carregar a imagem
@@ -15,21 +15,18 @@ def classificar_imagem(img_path):
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)  # Adicionar uma nova dimensão para o batch
 
-    # Normalizar a imagem
     img_array /= 255.0
 
-    # Fazer a predição
     predicao = model.predict(img_array)
+
+    print(f'Probabilidades: {predicao}')
+
     classe_predita = np.argmax(predicao, axis=1)[0]  # Pega o índice da classe com maior probabilidade
 
-    predicao = model.predict(img_array)
-    print(f'Probabilidades: {predicao}')  # Isso mostrará as probabilidades para cada classe
-
-    # Resultado
     return class_labels[classe_predita]
 
 # Usar a função
-caminho_imagem = 'C:\AmbienteDesenvolvimento\ProjetoIA2.1\imagem test\image_000.jpg'
+caminho_imagem = 'C:\caio\Processamento-de-lixo-no-mar\pollution-sea-dataset\datasetGarbage/test/Non Garbage/No_Oil_Spill00996.jpg'
 
 resultado = classificar_imagem(caminho_imagem)
 print(f'A imagem classificada é: {resultado}')
